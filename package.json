@@ -1,0 +1,15 @@
+{
+  "name": "fasttap-server",
+  "version": "4.2.0",
+  "description": "FastTap Ultra web edition — PWA, multiplayer, ranked matchmaking and responsive touch UI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "uuid": "^9.0.1"
+  }
+}

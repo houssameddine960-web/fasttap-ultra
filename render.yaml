@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: fasttap-ultra
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PUBLIC_ORIGIN
+        value: https://fasttap-ultra.onrender.com

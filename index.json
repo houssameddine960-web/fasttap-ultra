@@ -1,0 +1,10 @@
+{
+  "version": "4.2.1",
+  "assets": {
+    "images": ["bg_hd.raw", "textures_hd.bin"],
+    "audio": ["sfx_pack.raw"],
+    "data": ["assets_pack.bin"]
+  },
+  "totalApproxMB": 26,
+  "note": "High-quality asset pack for future visual and audio enhancements"
+}

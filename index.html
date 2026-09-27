@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#00e5ff">
+<meta name="description" content="FastTap Ultra — fast competitive tap battles with AI, local and online modes.">
+<meta name="color-scheme" content="dark"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>FastTap Ultra ⚡ — Tap Battle</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style-extras.css">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<!-- ============ شاشة اللودينغ ============ -->
+<div id="loadingScreen" class="screen active">
+  <div class="loading-logo">⚡</div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+  <p id="loadingText">Loading...</p>
+</div>
+
+<!-- ============ القائمة الرئيسية ============ -->
+<div id="mainMenu" class="screen">
+  <div class="top-bar">
+    <div class="user-chip" id="userChip">
+      <div class="avatar" id="avatarEl">👤</div>
+      <div class="user-info">
+        <div class="user-name" id="profileName">Player</div>
+        <div class="user-rank" id="userRankChip">🥉 Bronze</div>
+      </div>
+    </div>
+    <div class="coin-chip">🪙 <span id="coinCount">0</span></div>
+  </div>
+
+  <h1 class="game-title">
+    <span class="bolt">⚡</span>FastTap<span class="bolt">⚡</span>
+  </h1>
+
+  <div class="menu-buttons">
+    <button data-action="ranked" class="ranked-btn">
+      <span class="ico">🏅</span>
+      <span data-i18n="rankedPlay">Ranked Match</span>
+      <span class="badge" id="rankedBadge">🥉 1000</span>
+    </button>
+    <button data-action="ai"><span class="ico">🤖</span><span data-i18n="ai">Play vs AI</span></button>
+    <button data-action="duo"><span class="ico">👥</span><span data-i18n="duo">2 Players</span></button>
+    <button data-action="online"><span class="ico">🌐</span><span data-i18n="online">Online</span></button>
+    <button data-action="friend"><span class="ico">🤝</span><span data-i18n="friend">With Friend</span></button>
+    <button data-action="friends"><span class="ico">👫</span><span data-i18n="friendsList">Friends</span></button>
+    <button data-action="dailyBox"><span class="ico">🎁</span><span data-i18n="dailyBox">Daily Box</span></button>
+    <button data-action="profile"><span class="ico">👤</span><span data-i18n="profile">Profile</span></button>
+    <button data-action="achievements"><span class="ico">🏆</span><span data-i18n="achievements">Achievements</span></button>
+    <button data-action="leaderboard"><span class="ico">📊</span><span data-i18n="leaderboard">Leaderboard</span></button>
+    <button data-action="settings"><span class="ico">⚙️</span><span data-i18n="settings">Settings</span></button>
+  </div>
+</div>
+
+<!-- ============ Matchmaking ============ -->
+<div id="matchmakingScreen" class="screen">
+  <div class="matchmaking-anim">
+    <div class="mm-ring"></div>
+    <div class="mm-ring mm-ring-2"></div>
+    <div class="mm-icon">🔍</div>
+  </div>
+  <h2 data-i18n="findingMatch">Finding Match...</h2>
+  <p class="hint" id="mmMmr">MMR: 1000</p>
+  <p class="hint" id="mmElapsed">0s</p>
+  <button class="danger" id="cancelMatchBtn" data-i18n="cancel">Cancel</button>
+</div>
+
+<!-- ============ Match Found ============ -->
+<div id="matchFoundScreen" class="screen">
+  <h2 data-i18n="matchFound">Match Found!</h2>
+  <div class="vs-container">
+    <div class="vs-player me">
+      <div class="avatar big" id="vsMeAvatar">👤</div>
+      <div class="vs-name" id="vsMeName">You</div>
+      <div class="vs-mmr" id="vsMeMmr">1000</div>
+    </div>
+    <div class="vs-text">VS</div>
+    <div class="vs-player opp">
+      <div class="avatar big" id="vsOppAvatar">👤</div>
+      <div class="vs-name" id="vsOppName">Opponent</div>
+      <div class="vs-mmr" id="vsOppMmr">1000</div>
+    </div>
+  </div>
+  <div class="countdown-big" id="matchCountdown">5</div>
+</div>
+
+<!-- ============ اختيار الصعوبة ============ -->
+<div id="difficultyScreen" class="screen">
+  <h2 data-i18n="chooseDiff">Choose Difficulty</h2>
+  <div class="diff-grid">
+    <button data-diff="easy" class="diff-card easy">
+      <div class="diff-emoji">😊</div>
+      <div class="diff-name" data-i18n="easy">Easy</div>
+      <div class="diff-desc" data-i18n="easyDesc">2 taps/s</div>
+    </button>
+    <button data-diff="medium" class="diff-card medium">
+      <div class="diff-emoji">😐</div>
+      <div class="diff-name" data-i18n="medium">Medium</div>
+      <div class="diff-desc" data-i18n="mediumDesc">5 taps/s</div>
+    </button>
+    <button data-diff="hard" class="diff-card hard">
+      <div class="diff-emoji">😠</div>
+      <div class="diff-name" data-i18n="hard">Hard</div>
+      <div class="diff-desc" data-i18n="hardDesc">9 taps/s</div>
+    </button>
+    <button data-diff="impossible" class="diff-card impossible">
+      <div class="diff-emoji">💀</div>
+      <div class="diff-name" data-i18n="impossible">Impossible</div>
+      <div class="diff-desc" data-i18n="impossibleDesc">18 taps/s</div>
+    </button>
+  </div>
+  <button class="back-btn" data-i18n="back">↩ Back</button>
+</div>
+
+<!-- ============ شاشة الاسم ============ -->
+<div id="nameScreen" class="screen">
+  <h2 id="nameTitle" data-i18n="enterName">Enter your name</h2>
+  <div class="avatar-picker">
+    <button class="avatar-btn" data-avatar="👤">👤</button>
+    <button class="avatar-btn" data-avatar="🐱">🐱</button>
+    <button class="avatar-btn" data-avatar="🐶">🐶</button>
+    <button class="avatar-btn" data-avatar="🦊">🦊</button>
+    <button class="avatar-btn" data-avatar="🐼">🐼</button>
+    <button class="avatar-btn" data-avatar="🦁">🦁</button>
+    <button class="avatar-btn" data-avatar="🐉">🐉</button>
+    <button class="avatar-btn" data-avatar="⚡">⚡</button>
+    <button class="avatar-btn" data-avatar="🔥">🔥</button>
+    <button class="avatar-btn" data-avatar="💀">💀</button>
+    <button class="avatar-btn" data-avatar="👑">👑</button>
+    <button class="avatar-btn" data-avatar="🎯">🎯</button>
+  </div>
+  <input id="playerNameInput" type="text" maxlength="12" data-i18n-ph="namePh" placeholder="Your name">
+  <div id="friendCodeArea" style="display:none">
+    <p class="hint" data-i18n="friendCode">Friend code (digits only, max 10):</p>
+    <input id="friendCodeInput" type="text" maxlength="10" inputmode="numeric" placeholder="1234567890">
+  </div>
+  <button id="nameConfirm" class="primary" data-i18n="confirm">Confirm</button>
+  <button class="back-btn" data-i18n="back">↩ Back</button>
+</div>
+
+<!-- ============ Online ============ -->
+<div id="onlineScreen" class="screen">
+  <h2 data-i18n="onlineTitle">Online Play</h2>
+  <div class="online-tabs">
+    <button class="tab active" data-tab="create" data-i18n="createRoom">Create Room</button>
+    <button class="tab" data-tab="join" data-i18n="joinRoom">Join Room</button>
+  </div>
+
+  <div id="createTab" class="tab-content active">
+    <div class="room-options">
+      <label class="switch-row">
+        <span data-i18n="ranked">Ranked Match</span>
+        <input type="checkbox" id="rankedToggle">
+      </label>
+    </div>
+    <button id="createRoomBtn" class="primary" data-i18n="createRoom">Create Room</button>
+    <div id="roomCodeDisplay" class="room-code hidden">
+      <p data-i18n="shareCode">Share this code:</p>
+      <div class="code-box" id="generatedCode">------</div>
+      <button id="copyCodeBtn" class="small-btn" data-i18n="copy">📋 Copy</button>
+    </div>
+  </div>
+
+  <div id="joinTab" class="tab-content">
+    <input id="joinCodeInput" type="text" maxlength="6" inputmode="numeric" placeholder="------">
+    <button id="joinRoomBtn" class="primary" data-i18n="joinRoom">Join Room</button>
+  </div>
+
+  <div id="onlineStatus" class="online-status"></div>
+  <div id="onlinePlayers" class="online-players"></div>
+  <button id="startOnlineBtn" class="primary hidden" data-i18n="startGame">▶ Start Game</button>
+  <button class="back-btn" data-i18n="back">↩ Back</button>
+</div>
+
+<!-- ============ Friends ============ -->
+<div id="friendsScreen" class="screen">
+  <h2 data-i18n="friendsList">Friends</h2>
+  <div class="add-friend-row">
+    <input id="friendNameInput" type="text" maxlength="12" data-i18n-ph="friendNamePh" placeholder="Friend's name">
+    <button id="addFriendBtn" class="primary small-btn" data-i18n="add">Add</button>
+  </div>
+  <div class="friends-list" id="friendsList"></div>
+  <button class="back-btn" data-i18n="back">↩ Back</button>
+</div>
+
+<!-- ============ Daily Box ============ -->
+<div id="dailyBoxScreen" class="screen">
+  <h2 data-i18n="dailyBox">Daily Box</h2>
+  <div class="box-visual" id="boxVisual">🎁</div>
+  <p class="hint" id="boxStatus" data-i18n="boxReady">Tap to open!</p>
+  <button id="openBoxBtn" class="primary" data-i18n="open">Open</button>
+  <div class="reward-popup hidden" id="rewardPopup">
+    <div class="reward-amount" id="rewardAmount">+100 🪙</div>
+  </div>
+  <button class="back-btn" data-i18n="back">↩ Back</button>
+</div>
+
+<!-- ============ Game ============ -->
+<div id="gameScreen" class="screen">
+  <div class="hud">
+    <button id="pauseBtn" class="icon-btn">⏸</button>
+    <div class="timer-center">
+      <div id="timer">10</div>
+      <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+    </div>
+    <div class="hud-right">
+      <button id="chatBtn" class="icon-btn hidden">💬</button>
+      <button id="homeBtn" class="icon-btn">🏠</button>
+      <button id="restartBtn" class="icon-btn">🔄</button>
+    </div>
+  </div>
+
+  <div class="arena">
+    <div class="player-side left" id="p1Side">
+      <div class="side-header">
+        <div class="avatar small" id="p1Avatar">👤</div>
+        <h3 id="p1Name">Player 1</h3>
+      </div>
+      <div class="tap-area" id="p1Area">
+        <div class="ripple-layer" id="rippleLayer1"></div>
+        <span class="tap-hint" data-i18n="tap">TAP!</span>
+      </div>
+      <div class="score" id="p1Score">0</div>
+      <div class="combo" id="p1Combo"></div>
+    </div>
+
+    <div class="center-counter">
+      <div class="counter" id="mainCounter">0</div>
+      <div class="goal">/ <span id="goalValue">100</span></div>
+      <div class="goal-bar"><div class="goal-fill" id="goalFill"></div></div>
+    </div>
+
+    <div class="player-side right" id="p2Side">
+      <div class="side-header">
+        <div class="avatar small" id="p2Avatar">👤</div>
+        <h3 id="p2Name">Player 2</h3>
+      </div>
+      <div class="tap-area" id="p2Area">
+        <div class="ripple-layer" id="rippleLayer2"></div>
+        <span class="tap-hint" data-i18n="tap">TAP!</span>
+      </div>
+      <div class="score" id="p2Score">0</div>
+      <div class="combo" id="p2Combo"></div>
+    </div>
+  </div>
+
+  <div id="countdownOverlay" class="overlay">
+    <div id="countdownNum">5</div>
+  </div>
+</div>
+
+<!-- ============ Chat Overlay ============ -->
+<div id="chatOverlay" class="overlay hidden">
+  <div class="chat-panel">
+    <div class="chat-header">
+      <span data-i18n="chat">Chat</span>
+      <button id="closeChatBtn" class="icon-btn">✕</button>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-row">
+      <input id="chatInput" type="text" maxlength="200" data-i18n-ph="typeMsg" placeholder="Type...">
+      <button id="sendChatBtn" class="primary small-btn">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Pause ============ -->
+<div id="pauseOverlay" class="overlay hidden">
+  <div class="pause-menu">
+    <h2 data-i18n="pause">Paused</h2>
+    <button data-action="resume" class="primary" data-i18n="resume">▶ Resume</button>
+    <button data-action="restart" data-i18n="restart">🔄 Restart</button>
+    <button data-action="home" data-i18n="home">🏠 Main Menu</button>
+  </div>
+</div>
+
+<!-- ============ Win/Lose/Draw Screen (محدّث) ============ -->
+<div id="resultScreen" class="screen result-screen">
+  <div class="result-bg" id="resultBg"></div>
+  <div class="result-particles" id="resultParticles"></div>
+
+  <div class="result-content">
+    <div class="result-emoji" id="resultEmoji">🏆</div>
+    <h1 class="result-title" id="resultTitle">Victory!</h1>
+    <p class="result-sub" id="resultSub">+50 XP</p>
+
+    <div class="result-mmr hidden" id="resultMmr">
+      <span class="mmr-delta" id="mmrDelta">+15</span>
+      <span class="mmr-new" id="mmrNew">1015</span>
+      <span class="mmr-rank" id="mmrRank">🥉 Bronze</span>
+    </div>
+
+    <div class="result-stats" id="resultStats">
+      <!-- تُملأ ديناميكياً -->
+    </div>
+
+    <div class="result-rewards hidden" id="resultRewards">
+      <div class="reward-title" data-i18n="rewards">Rewards</div>
+      <div class="reward-items" id="rewardItems"></div>
+    </div>
+
+    <div class="result-buttons">
+      <button id="rematchBtn" class="primary" data-i18n="rematch">🔁 Rematch</button>
+      <button id="resultPlayAgain" data-i18n="again">🎮 Play Again</button>
+      <button id="resultHome" data-i18n="home">🏠 Main Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Profile ============ -->
+<div id="profileScreen" class="screen">
+  <h2 data-i18n="profile">Profile</h2>
+  <div class="profile-card">
+    <div class="avatar big" id="profileAvatar">👤</div>
+    <input type="text" id="profileNameInput" maxlength="12" placeholder="Your name">
+    <div class="rank-badge" id="profileRankBadge">🥉 Bronze</div>
+    <div class="mmr-display" id="profileMmr">1000 MMR</div>
+    <div class="level-bar">
+      <div class="level-fill" id="levelFill"></div>
+      <span class="level-text">Lv.<span id="levelNum">1</span> • <span id="xpNum">0</span>/<span id="xpMax">100</span></span>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val" id="statWins">0</div><div class="stat-lbl" data-i18n="wins">Wins</div></div>
+    <div class="stat-card"><div class="stat-val" id="statLosses">0</div><div class="stat-lbl" data-i18n="losses">Losses</div></div>
+    <div class="stat-card"><div class="stat-val" id="statDraws">0</div><div class="stat-lbl" data-i18n="draws">Draws</div></div>
+    <div class="stat-card"><div class="stat-val" id="statTaps">0</div><div class="stat-lbl" data-i18n="totalTaps">Total Taps</div></div>
+    <div class="stat-card"><div class="stat-val" id="statBest">0</div><div class="stat-lbl" data-i18n="bestTps">Best TPS</div></div>
+    <div class="stat-card"><div class="stat-val" id="statWinRate">0%</div><div class="stat-lbl" data-i18n="winRate">Win Rate</div></div>
+  </div>
+  <div class="rank-ladder">
+    <h3 data-i18n="rankLadder">Rank Ladder</h3>
+    <div class="ladder-items" id="rankLadder"></div>
+  </div>
+  <button class="back-btn" data-i18n="back">↩ Back</button>
+</div>
+
+<!-- ============ Achievements ============ -->
+<div id="achievementsScreen" class="screen">
+  <h2 data-i18n="achievements">Achievements</h2>
+  <div class="ach-progress">
+    <div class="ach-bar"><div class="ach-fill" id="achFill"></div></div>
+    <span id="achCount">0/15</span>
+  </div>
+  <div class="achievements-list" id="achievementsList"></div>
+  <button class="back-btn" data-i18n="back">↩ Back</button>
+</div>
+
+<!-- ============ Leaderboard ============ -->
+<div id="leaderboardScreen" class="screen">
+  <h2 data-i18n="leaderboard">Leaderboard</h2>
+  <div class="lb-tabs">
+    <button class="tab active" data-lb="local" data-i18n="local">Local</button>
+    <button class="tab" data-lb="global" data-i18n="global">Global</button>
+    <button class="tab" data-lb="friends" data-i18n="friendsTab">Friends</button>
+  </div>
+  <div class="leaderboard" id="leaderboardList"></div>
+  <button class="back-btn" data-i18n="back">↩ Back</button>
+</div>
+
+<!-- ============ Settings ============ -->
+<div id="settingsScreen" class="screen">
+  <h2 data-i18n="settings">⚙️ Settings</h2>
+
+  <div class="setting-row">
+    <label data-i18n="sound">🔊 Sound Effects</label>
+    <input type="checkbox" id="sfxToggle" checked>
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="music">🎵 Music</label>
+    <select id="musicSelect">
+      <option value="calm" selected data-i18n="calm">Calm</option>
+      <option value="normal" data-i18n="normal">Normal</option>
+      <option value="intense" data-i18n="intense">Intense</option>
+      <option value="epic" data-i18n="epic">Epic</option>
+      <option value="off" data-i18n="off">Off</option>
+    </select>
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="quality">🎨 Graphics</label>
+    <select id="qualitySelect">
+      <option value="high" data-i18n="high">High</option>
+      <option value="medium" selected data-i18n="medium">Medium</option>
+      <option value="low" data-i18n="low">Low</option>
+    </select>
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="theme">🎨 Theme</label>
+    <select id="themeSelect">
+      <option value="neon" selected>Neon</option>
+      <option value="cyber">Cyber</option>
+      <option value="sunset">Sunset</option>
+      <option value="ocean">Ocean</option>
+      <option value="forest">Forest</option>
+      <option value="mono">Mono</option>
+    </select>
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="language">🌍 Language</label>
+    <select id="langSelect">
+      <option value="en" selected>English</option>
+      <option value="ar">العربية</option>
+      <option value="fr">Français</option>
+      <option value="es">Español</option>
+      <option value="de">Deutsch</option>
+      <option value="tr">Türkçe</option>
+      <option value="it">Italiano</option>
+    </select>
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="vibrate">📳 Vibration</label>
+    <input type="checkbox" id="vibrateToggle" checked>
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="duration">⏱️ Duration (s)</label>
+    <input type="number" id="durationInput" min="5" max="120" value="10">
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="goal">🎯 Goal</label>
+    <input type="number" id="goalInput" min="10" max="1000" value="100">
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="particles">✨ Particles</label>
+    <input type="checkbox" id="particlesToggle" checked>
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="screenShake">📳 Screen Shake</label>
+    <input type="checkbox" id="shakeToggle" checked>
+  </div>
+
+  <div class="setting-row">
+    <label data-i18n="haptics">💥 Haptic Feedback</label>
+    <input type="checkbox" id="hapticsToggle" checked>
+  </div>
+
+  <button id="resetProgressBtn" class="danger" data-i18n="resetProgress">🗑️ Reset Progress</button>
+  <button class="back-btn" data-i18n="back">↩ Back</button>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="audio.js"></script>
+<script src="web.js"></script>
+<script src="online.js"></script>
+<script src="ui.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
